@@ -23,7 +23,7 @@ jobs:
           pip install buildozer kivy cython
 
       - name: Build with Buildozer
-        # السطر القادم هو الحل لـ Exit Code 100 (الموافقة التلقائية على الشروط)
+        # السطر القادم يحل مشكلة exit code 100 عبر الموافقة التلقائية
         run: |
           yes | buildozer android debug
         env:

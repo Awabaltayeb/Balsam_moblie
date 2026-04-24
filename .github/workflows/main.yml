@@ -2,18 +2,22 @@ name: Build APK
 on:
   push:
     branches: [ main ]
+  workflow_dispatch: # هذا الخيار يسمح لك بتشغيل البناء يدوياً
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - name: Build with Buildozer
-        uses: ArtemSerebriakov/buildozer-action@v1
+        uses: kivy/buildozer-action@master
         with:
           buildozer_version: master
-          python_version: 3.8
+          python_version: 3.11
+
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: package
+          name: Balsam-App
           path: bin/*.apk

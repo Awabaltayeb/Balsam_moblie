@@ -1,18 +1,21 @@
 name: Build APK
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
-# إضافة المتغير لتجاوز تحذير Node.js كما طلبت الرسالة
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -22,16 +25,13 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev libsqlite3-dev
           pip install --upgrade pip
-          pip install buildozer kivy cython
+          pip install buildozer cython==0.29.36 kivy
 
       - name: Build with Buildozer
-        # استخدام سطر yes يضمن الموافقة التلقائية على كل التراخيص
         run: |
-          yes | buildozer android debug
-        env:
-          ACCEPT_SDK_LICENSE: "yes"
+          buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

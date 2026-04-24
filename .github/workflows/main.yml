@@ -4,6 +4,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# إضافة المتغير لتجاوز تحذير Node.js كما طلبت الرسالة
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +27,7 @@ jobs:
           pip install buildozer kivy cython
 
       - name: Build with Buildozer
-        # السطر القادم يحل مشكلة exit code 100 عبر الموافقة التلقائية
+        # استخدام سطر yes يضمن الموافقة التلقائية على كل التراخيص
         run: |
           yes | buildozer android debug
         env:
@@ -32,5 +36,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Balsam-App
+          name: Balsam-App-Package
           path: bin/*.apk

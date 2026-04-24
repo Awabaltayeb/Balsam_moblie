@@ -1,52 +1,45 @@
 name: Build APK
-
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android Build Tools
-        run: |
-          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
-
-      - name: Accept Android licenses
-        run: yes | sdkmanager --licenses
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev libsqlite3-dev
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
           pip install --upgrade pip
-          pip install buildozer cython==0.29.36 kivy kivymd pillow arabic_reshaper python-bidi
+          pip install buildozer kivy cython
 
-      - name: Build APK
+      - name: Setup Android SDK
+        # هذا الجزء سيقوم بتجهيز البيئة وتحميل أداة Aidl تلقائياً
         run: |
-          buildozer -v android debug
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | buildozer android debug --help 
+
+      - name: Build with Buildozer
+        run: |
+          yes | buildozer android debug
+        env:
+          ACCEPT_SDK_LICENSE: "yes"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Balsam-App
+          name: Balsam-App-Package
           path: bin/*.apk

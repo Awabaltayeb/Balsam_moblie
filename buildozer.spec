@@ -1,5 +1,5 @@
 [app]
-title = Balsam Mobile
+title = BalsamMobile
 package.name = balsam
 package.domain = org.awab
 source.dir = .

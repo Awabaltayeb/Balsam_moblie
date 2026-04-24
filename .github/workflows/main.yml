@@ -11,11 +11,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build with Buildozer
-        # هذا هو المستودع الرسمي والمدعوم حالياً بشكل كامل
-        uses: ArtemSerebriakov/buildozer-action@v1
+        # هذا هو المسار الرسمي المعتمد من قبل Kivy
+        uses: kivy/buildozer-action@v1.2.3
         with:
           buildozer_version: master
-          python_version: 3.10
+          python_version: 3.11
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

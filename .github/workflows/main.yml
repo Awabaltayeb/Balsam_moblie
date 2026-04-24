@@ -23,9 +23,12 @@ jobs:
           pip install buildozer kivy cython
 
       - name: Build with Buildozer
+        # السطر القادم هو الحل لـ Exit Code 100 (الموافقة التلقائية على الشروط)
         run: |
           yes | buildozer android debug
-          
+        env:
+          ACCEPT_SDK_LICENSE: "yes"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
